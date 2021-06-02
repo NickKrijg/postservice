@@ -1,6 +1,7 @@
 package com.kwetter.postservice.controllers;
 
 import com.kwetter.postservice.entity.Post;
+import com.kwetter.postservice.exception.InvalidContentException;
 import com.kwetter.postservice.exception.InvalidPostRefenerceExpection;
 import com.kwetter.postservice.service.PostService;
 import com.kwetter.postservice.rabbit.RabbitMQSender;
@@ -35,6 +36,9 @@ public class PostController {
 
     @PostMapping()
     public Long createPost(@RequestBody Post post) {
+        if (post.getContent() == null || post.getContent().length() <= 0){
+            throw new InvalidContentException("no content");
+        }
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         post.setUsername(userDetails.getUsername());
         post.setCreatedAt(new Date());

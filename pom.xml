@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.kwetter</groupId>
     <artifactId>postservice</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>init</version>
     <name>Post service</name>
     <description>Post service for Kwetter project</description>
     <properties>
