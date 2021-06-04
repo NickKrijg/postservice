@@ -14,7 +14,7 @@ public class RabbitMQConsumer {
     @Autowired
     private PostService postService;
 
-    @RabbitListener(queues = RabbitMQConfig.queuePost)
+    @RabbitListener(queuesToDeclare = @Queue(name = RabbitMQConfig.queuePost, durable = "true"))
     public void receivedMessages(Post post) {
         System.out.println("Received: " + post.toString());
     }
