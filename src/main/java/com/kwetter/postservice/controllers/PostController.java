@@ -3,8 +3,9 @@ package com.kwetter.postservice.controllers;
 import com.kwetter.postservice.entity.Post;
 import com.kwetter.postservice.exception.InvalidContentException;
 import com.kwetter.postservice.exception.InvalidPostRefenerceExpection;
-import com.kwetter.postservice.service.PostService;
 import com.kwetter.postservice.rabbit.RabbitMQSender;
+import com.kwetter.postservice.service.PostService;
+import com.kwetter.postservice.service.ProfanityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,9 +24,18 @@ public class PostController {
     @Autowired
     private RabbitMQSender rabbitMQSender;
 
+    @Autowired
+    private ProfanityService profanityService;
+
     @GetMapping("/getallfromuser/{username}")
     public Iterable<Post> getAllByUser(@PathVariable("username") String username) {
         return postService.getAllByUsername(username);
+    }
+
+    @GetMapping("/getallfromuser")
+    public Iterable<Post> getAllFromMe(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return postService.getAllByUsername(userDetails.getUsername());
     }
 
     @GetMapping("/getpost/{id}")
@@ -45,6 +55,12 @@ public class PostController {
         post.setChildFriendly(true);
 
         postService.savePost(post);
+
+        Thread checkProfanityThread = new Thread(() -> {
+            updateProfanity(post);
+        });
+        checkProfanityThread.start();
+
         return post.getId();
     }
 
@@ -58,5 +74,12 @@ public class PostController {
         post.setUsername("nick");
 
         rabbitMQSender.send(post);
+    }
+
+    private void updateProfanity(Post post) {
+        Boolean isChildFriendly = profanityService.isContentChildFriendly(post.getContent());
+        post.setChildFriendly(isChildFriendly);
+
+        postService.savePost(post);
     }
 }
