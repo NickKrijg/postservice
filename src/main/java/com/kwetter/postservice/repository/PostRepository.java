@@ -9,4 +9,6 @@ public interface PostRepository extends CrudRepository<Post, Long> {
     Iterable<Post> findAllByUsername(String username);
 
     Integer deleteAllByUsername(String username);
+
+    Iterable<Post> findTop10ByOrderByCreatedAtDesc();
 }

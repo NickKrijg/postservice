@@ -30,6 +30,10 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
+    public Iterable<Post> getTop10() {
+        return postRepository.findTop10ByOrderByCreatedAtDesc();
+    }
+
     @Transactional
     public Integer deleteAllByUsername(String username) {
         return postRepository.deleteAllByUsername(username);

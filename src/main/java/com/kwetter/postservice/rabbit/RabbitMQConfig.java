@@ -15,13 +15,15 @@ public class RabbitMQConfig {
 
     public static final String queuePost = "post";
     public static final String queueForget = "forget";
+    public static final String queueFeed = "feed";
 
     public static final String postRoutingKey = "post.new.#";
     public static final String forgetRoutingKey = "forget.user.#";
+    public static final String feedRoutingKey = "feed.top.#";
 
     @Bean
     Queue queue(){
-        return new Queue(queuePost, true);
+        return new Queue(queueFeed, true);
     }
 
     @Bean
@@ -31,7 +33,7 @@ public class RabbitMQConfig {
 
     @Bean
     Binding binding() {
-        return BindingBuilder.bind(queue()).to(exchange()).with(postRoutingKey);
+        return BindingBuilder.bind(queue()).to(exchange()).with(feedRoutingKey);
     }
 
     @Bean

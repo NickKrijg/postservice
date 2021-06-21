@@ -15,7 +15,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/post")
-@CrossOrigin(origins = {"http://localhost:8080", "*"})
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8085", "*"})
 public class PostController {
 
     @Autowired
@@ -38,13 +38,13 @@ public class PostController {
         return postService.getAllByUsername(userDetails.getUsername());
     }
 
-    @GetMapping("/getpost/{id}")
+    @GetMapping("/{id}")
     public Post getPostById(@PathVariable("id") Long id){
         return postService.getPostById(id)
                 .orElseThrow(() -> new InvalidPostRefenerceExpection("Post not found."));
     }
 
-    @PostMapping()
+    @PostMapping("/create")
     public Long createPost(@RequestBody Post post) {
         if (post.getContent() == null || post.getContent().length() <= 0){
             throw new InvalidContentException("no content");
