@@ -25,7 +25,7 @@ spec:
               value: rabbitmq
             - name: EUREKA_INSTANCE_HOSTNAME
               value: registry
-          image: nickkrijg/postservice:latest
+          image: kwetteracr.azurecr.io/postservice:latest
           imagePullPolicy: Always
           name: postservice
           ports:
